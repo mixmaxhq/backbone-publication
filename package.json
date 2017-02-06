@@ -1,0 +1,24 @@
+{
+  "name": "backbone-publication",
+  "version": "0.0.0",
+  "description": "Publication backed Backbone.Meteor and Backbone.Collection classes",
+  "main": "dist/browser/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mixmaxhq/backbone-publication.git"
+  },
+  "keywords": [
+    "backbone",
+    "publication-client",
+    "publications"
+  ],
+  "author": "Trey Tacon <trey@mixmax.com> (https://mixmax.com)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mixmaxhq/backbone-publication/issues"
+  },
+  "homepage": "https://github.com/mixmaxhq/backbone-publication#readme"
+}
