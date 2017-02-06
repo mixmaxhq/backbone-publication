@@ -137,6 +137,18 @@ class PublicationModel extends Backbone.Model {
   }
 
   /**
+   * Sets the reactive query to the given reactive query.
+   * NOTE: if you use this functionality, you'll need to also call
+   * `startObservingChanges` in order to re-initialize the model's listeners.
+   *
+   * @param {Object} query A reactive query created via
+   *    `PublicationClient::LocalCollection::find`.
+   */
+  setReactiveQuery(query) {
+    this._reactiveQuery = query;
+  }
+
+  /**
    * Stop listening to the events establishedd in `startObservingChanges`.
    */
   stopObservingChanges() {
