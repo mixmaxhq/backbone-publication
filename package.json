@@ -1,5 +1,5 @@
 {
-  "name": "backbone-publication",
+  "name": "@mixmaxhq/backbone-publication",
   "version": "0.0.0",
   "description": "Publication backed Backbone.Meteor and Backbone.Collection classes",
   "main": "dist/browser/index.js",
