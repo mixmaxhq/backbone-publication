@@ -1,9 +1,10 @@
 # backbone-publication
 `backbone-publication` implements the boilerplate code that is required to make
-`backbone` and our publication based system (through `publication-client`) play
-nicely together. To use these classes, you simply need to instantiate them with
-the necessary reactive queries from a `publication-client`. This normally can
-be done in the bootstrapping process. For instance:
+`backbone` and our publication based system (through
+[`publication-client`](https://github.com/mixmaxhq/publication-server/tree/master/client))
+play nicely together. To use these classes, you simply need to instantiate them
+with the necessary reactive queries from a `publication-client`. This normally
+can be done in the bootstrapping process. For instance:
 
 ```js
 // During the bootstrapping process we normally set most collections/models -

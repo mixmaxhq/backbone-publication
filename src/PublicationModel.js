@@ -18,7 +18,8 @@ class PublicationModel extends Backbone.Model {
    *   @property {Bool} startObservingChanges Whether or not we should observe
    *      changes emitted by the reactiveQuery immediately.
    *   @property {Object} reactiveQuery An optional reactive query to monitor
-   *      for additions or changes.
+   *      for additions or changes. Created via
+   *      `PublicationClient::LocalCollection::find`.
    */
   constructor(attributes, options) {
     super(attributes, options);
@@ -39,14 +40,6 @@ class PublicationModel extends Backbone.Model {
    * remote changes to merge cleanly.
    */
   get idAttribute() { return '_id'; }
-
-  /**
-   * Specified for standalone models.
-   * Must not be specified for models included in a reactive collection
-   * (such models should delegate reactivity to the collection to avoid
-   * duplicate processing and/or events).
-   */
-  get reactiveQuery() { return this._reactiveQuery; }
 
   /**
    * Override set implementation with a deep extend in order to detect change in nested field
@@ -144,18 +137,12 @@ class PublicationModel extends Backbone.Model {
   }
 
   /**
-   * @param {Object} query A reactive query created via `Meteor.find`
-   */
-  set reactiveQuery(query) {
-    this._reactiveQuery = query;
-  }
-
-  /**
    * Stop listening to the events establishedd in `startObservingChanges`.
    */
   stopObservingChanges() {
-    this._reactiveQuery.removeListener('added', this._boundAdded)
-      .removeListener('changed', this._boundChanged);
+    this._reactiveQuery
+      .removeListener('added', this._boundOnAdded)
+      .removeListener('changed', this._boundOnChanged);
   }
 }
 
