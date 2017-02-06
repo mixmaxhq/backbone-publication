@@ -2,7 +2,28 @@ import _ from 'underscore';
 import Backbone from 'backbone';
 import PublicationModel from './PublicationModel';
 
+
+/**
+ * A PublicationCollection is a class that provides an integration point
+ * between our usage of Backbone and our publications - it represents the state
+ * of many individual documents (a collection).
+ */
 class PublicationCollection extends Backbone.Collection {
+
+  /**
+   * Creates the PublicationCollection and sets up handlers to listen to a
+   * given reactive query once the subscription is ready (if we're told to
+   * wait on it).
+   *
+   * @param {Object[]} models The initial models to insert into the collection.
+   * @param {Object} options The initial options we'd like to honor.
+   *    @property {Object} waitOn (optional) The subscription to wait to be
+   *       ready.
+   *    @property {Object} reactiveQuery The reactive query to monitor for
+   *       updates.
+   *    @property {Bool} startObservingChanges Whether or not to monitory the
+   *       reactive query immediately.
+   */
   constructor(models, options) {
     super(models, options);
 
@@ -10,9 +31,13 @@ class PublicationCollection extends Backbone.Collection {
       throw new Error('PublicationCollection models must derive from PublicationModel for syncing to work right.');
     }
     
-    this._options = _.defaults({}, options, { startObservingChanges: true });
+    options = _.defaults({}, options, { startObservingChanges: true });
     this._reactiveQuery = options.reactiveQuery;
     this._waitOn = options.waitOn;
+
+    this._boundOnAdded = this._onAdded.bind(this);
+    this._boundOnChanged = this._onChanged.bind(this);
+    this._boundOnRemoved = this._onRemoved.bind(this);
 
     if (this._waitOn) {
       this._waitOn.whenReady().then(function() {
@@ -22,48 +47,68 @@ class PublicationCollection extends Backbone.Collection {
         this.reset(this._reactiveQuery.fetch());
         this.startObservingChanges();
       }.bind(this));
-    } else if (this._options.startObservingChanges) {
+    } else if (options.startObservingChanges) {
       this.startObservingChanges();
     }
   }
-  
 
+  /**
+   * Handles `added` events emitted by the reactive query.
+   */
+  _onAdded(id, fields) {
+    var doc = _.extend({ _id: id }, fields);
+    // If the collection was not instructed to wait for the relevant
+    // subscription to become ready, this will be called for the initial
+    // result set. Since that may overlap with the models with which the
+    // collection was initialized, we merge the models.
+    this.add(doc, { merge: true });
+  }
+
+  /**
+   * Handles `changed` events emitted by the reactive query.
+   */
+  _onChanged(id, fields) {
+    var model = this.get(id);
+    if (model) {
+      var isUndefinedOrNull = function(field) {
+        return _.isUndefined(field) || _.isNull(field);
+      };
+      var toUnset = _.deepPick(fields, isUndefinedOrNull);
+      model.unset(toUnset);
+
+      var toSet = _.deepOmit(fields, isUndefinedOrNull);
+      model.set(toSet);
+    }
+  }
+
+  /**
+   * Handles `removed` events emitted by the reactive query.
+   */
+  _onRemoved(id) {
+    var model = this.get(id);
+    if (model) {
+      this.remove(model);
+    }
+  }
+
+  /**
+   * Starts observing the reactive query for changes.
+   */
   startObservingChanges() {
     this._reactiveQuery
-      .on('added', function(id, fields) {
-        var doc = _.extend({ _id: id }, fields);
-        // If the collection was not instructed to wait for the relevant
-        // subscription to become ready, this will be called for the initial
-        // result set. Since that may overlap with the models with which the
-        // collection was initialized, we merge the models.
-        this.add(doc, { merge: true });
-      }, this)
-      .on('changed', function(id, fields) {
-        var model = this.get(id);
-        if (model) {
-          var isUndefinedOrNull = function(field) {
-            return _.isUndefined(field) || _.isNull(field);
-          };
-          var toUnset = _.deepPick(fields, isUndefinedOrNull);
-          model.unset(toUnset);
-
-          var toSet = _.deepOmit(fields, isUndefinedOrNull);
-          model.set(toSet);
-        }
-      }, this)
-      .on('removed', function(id) {
-        var model = this.get(id);
-        if (model) {
-          this.remove(model);
-        }
-      }, this);
+      .on('added', this._boundOnAdded)
+      .on('changed', this._boundOnChanged)
+      .on('removed', this._boundOnRemoved);
   }
 
   /**
    * Stop listening to the events established in `startObservingChanges`.
    */
   stopObservingChanges() {
-    this._reactiveQuery.off('added changed removed');
+    this._reactiveQuery
+      .removeListener('added', this._boundOnAdded)
+      .removeListener('changed', this._boundOnChanged)
+      .removeListener('removed', this._boundOnRemoved);
   }
 
   set(models, options) {
@@ -82,6 +127,8 @@ class PublicationCollection extends Backbone.Collection {
       }
     }
 
+    // HACK(ttacon): For some reason, `super.set` doesn't function correctly
+    // here. I'll need to look into why.
     Backbone.Collection.prototype.set.apply(this, arguments);
   }
 };

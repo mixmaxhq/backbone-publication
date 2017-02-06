@@ -1,25 +1,52 @@
 import _ from 'underscore';
 import Backbone from 'backbone';
 
+/**
+ * A PublicationModel is a class that provides an integration point between
+ * our usage of Backbone and our publications - it represents an individual
+ * model's state.
+ */
 class PublicationModel extends Backbone.Model {
-  // This must not be overridden in order for remote changes to merge cleanly.
-  get idAttribute() { return '_id'; }
+  /**
+   * Creates a new PublicationModel.
+   *
+   * @param {Object} attributes The attributes of the instance of this model.
+   * @param {Object} options Any options we'd like to consider - primarily if
+   *    we have a reactive query that we should be monitoring to detect
+   *    changes for, or if we shouldn't start observing for changes
+   *    immediately.
+   *   @property {Bool} startObservingChanges Whether or not we should observe
+   *      changes emitted by the reactiveQuery immediately.
+   *   @property {Object} reactiveQuery An optional reactive query to monitor
+   *      for additions or changes.
+   */
+  constructor(attributes, options) {
+    super(attributes, options);
 
-  // Specified for standalone models.
-  // Must not be specified for models included in a reactive collection
-  // (such models should delegate reactivity to the collection to avoid
-  // duplicate processing and/or events).
-  get reactiveQuery() { return this._reactiveQuery; }
-
-  initialize(attributes, options) {
     options = _.defaults({}, options, { startObservingChanges: true });
 
-    this._reactiveQuery = options.reactiveQuery;
+    this._boundOnAdded = this._onAdded.bind(this);
+    this._boundOnChanged = this._onChanged.bind(this);
 
+    this._reactiveQuery = options.reactiveQuery;
     if (this._reactiveQuery && options.startObservingChanges) {
       this.startObservingChanges();
     }
   }
+
+  /**
+   * The ID attribute for this model. This must not be overridden in order for
+   * remote changes to merge cleanly.
+   */
+  get idAttribute() { return '_id'; }
+
+  /**
+   * Specified for standalone models.
+   * Must not be specified for models included in a reactive collection
+   * (such models should delegate reactivity to the collection to avoid
+   * duplicate processing and/or events).
+   */
+  get reactiveQuery() { return this._reactiveQuery; }
 
   /**
    * Override set implementation with a deep extend in order to detect change in nested field
@@ -77,29 +104,43 @@ class PublicationModel extends Backbone.Model {
     return this;
   }
 
+  /**
+   * Starts observing the given reactive query for `added` and `changed` events.
+   * It does not handle `removed` events which should be handled by the client.
+   */
   startObservingChanges() {
     this._reactiveQuery
-      .on('added', function(id, fields) {
-        // Sanity check.
-        if (id !== this.id) return;
-
-        // Merge the initial state of the model.
-        this.set(fields);
-      }, this)
-      .on('changed', function(id, fields) {
-        // Sanity check.
-        if (id !== this.id) return;
-
-        var isUndefinedOrNull = function(field) {
-          return _.isUndefined(field) || _.isNull(field);
-        };
-        var toUnset = _.deepPick(fields, isUndefinedOrNull);
-        if (!_.isEmpty(toUnset)) this.unset(toUnset);
-
-        var toSet = _.deepOmit(fields, isUndefinedOrNull);
-        if (!_.isEmpty(toSet)) this.set(toSet);
-      }, this);
+      .on('added', this._boundOnAdded)
+      .on('changed', this._boundOnChanged);
     // Ignore `removed`--it's up to the client to destroy the model.
+  }
+
+  /**
+   * Handles `added` events emitted by the reactive query.
+   */
+  _onAdded(id, fields) {
+    // Sanity check.
+    if (id !== this.id) return;
+
+    // Merge the initial state of the model.
+    this.set(fields);
+  }
+
+  /**
+   * Handles `changed` events emitted by the reactive query.
+   */
+  _onChanged(id, fields) {
+    // Sanity check.
+    if (id !== this.id) return;
+
+    var isUndefinedOrNull = function(field) {
+      return _.isUndefined(field) || _.isNull(field);
+    };
+    var toUnset = _.deepPick(fields, isUndefinedOrNull);
+    if (!_.isEmpty(toUnset)) this.unset(toUnset);
+
+    var toSet = _.deepOmit(fields, isUndefinedOrNull);
+    if (!_.isEmpty(toSet)) this.set(toSet);
   }
 
   /**
@@ -113,7 +154,8 @@ class PublicationModel extends Backbone.Model {
    * Stop listening to the events establishedd in `startObservingChanges`.
    */
   stopObservingChanges() {
-    this._reactiveQuery.off('added changed');
+    this._reactiveQuery.removeListener('added', this._boundAdded)
+      .removeListener('changed', this._boundChanged);
   }
 }
 
