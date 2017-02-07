@@ -6,9 +6,22 @@ import Backbone from 'backbone';
  * our usage of Backbone and our publications - it represents an individual
  * model's state.
  */
-class PublicationModel extends Backbone.Model {
+var PublicationModel = Backbone.Model.extend({
   /**
-   * Creates a new PublicationModel.
+   * This must not be overridden in order for remote changes to merge cleanly.
+   */
+  idAttribute: '_id',
+
+  /**
+   * Specified for standalone models.
+   * Must not be specified for models included in a reactive collection (such
+   * models should delegate reactivity to the collection to avoid duplicate
+   * processing and/or events).
+   */
+  _reactiveQuery: null,
+
+  /**
+   * Initializes the PublicationModel.
    *
    * @param {Object} attributes The attributes of the instance of this model.
    * @param {Object} options Any options we'd like to consider - primarily if
@@ -21,9 +34,7 @@ class PublicationModel extends Backbone.Model {
    *      for additions or changes. Created via
    *      `PublicationClient::LocalCollection::find`.
    */
-  constructor(attributes, options) {
-    super(attributes, options);
-
+  initialize(attributes, options) {
     options = _.defaults({}, options, { startObservingChanges: true });
 
     this._boundOnAdded = this._onAdded.bind(this);
@@ -33,13 +44,7 @@ class PublicationModel extends Backbone.Model {
     if (this._reactiveQuery && options.startObservingChanges) {
       this.startObservingChanges();
     }
-  }
-
-  /**
-   * The ID attribute for this model. This must not be overridden in order for
-   * remote changes to merge cleanly.
-   */
-  get idAttribute() { return '_id'; }
+  },
 
   /**
    * Override set implementation with a deep extend in order to detect change in nested field
@@ -67,16 +72,16 @@ class PublicationModel extends Backbone.Model {
     // Perform the standard Backbone.js set. Do this first, so when we trigger
     // events further down the new attributes are in place.
     if (options.unset) {
-      Backbone.Model.prototype.unset.call(this, fullAttributes, options);
+      PublicationModel.__super__.unset.call(this, fullAttributes, options);
     } else {
-      Backbone.Model.prototype.set.call(this, fullAttributes, options);
+      PublicationModel.__super__.set.call(this, fullAttributes, options);
     }
 
     if (!options.silent) {
       // Trigger events for any nested objects.
-      _.each(newAttributes, function(value, key, attributes) {
+      _.each(newAttributes, (value, key, attributes) => {
         if (_.isObject(value)) this.trigger('change:' + key, this, attributes[key], options);
-      }.bind(this));
+      });
 
       // If the new attributes were all nested objects, trigger a general `change` event too.
       var allObjects = _.every(newAttributes, function(v) {
@@ -86,16 +91,7 @@ class PublicationModel extends Backbone.Model {
     }
 
     return this;
-  }
-
-  /**
-   * Override unset implementation to use the overridden version of set above.
-   */
-  unset(key, value, options) {
-    options = _.extend(options, { unset: true });
-    this.set(key, value, options);
-    return this;
-  }
+  },
 
   /**
    * Starts observing the given reactive query for `added` and `changed` events.
@@ -106,7 +102,7 @@ class PublicationModel extends Backbone.Model {
       .on('added', this._boundOnAdded)
       .on('changed', this._boundOnChanged);
     // Ignore `removed`--it's up to the client to destroy the model.
-  }
+  },
 
   /**
    * Handles `added` events emitted by the reactive query.
@@ -117,7 +113,7 @@ class PublicationModel extends Backbone.Model {
 
     // Merge the initial state of the model.
     this.set(fields);
-  }
+  },
 
   /**
    * Handles `changed` events emitted by the reactive query.
@@ -134,19 +130,22 @@ class PublicationModel extends Backbone.Model {
 
     var toSet = _.deepOmit(fields, isUndefinedOrNull);
     if (!_.isEmpty(toSet)) this.set(toSet);
-  }
+  },
 
   /**
    * Sets the reactive query to the given reactive query.
    * NOTE: if you use this functionality, you'll need to also call
    * `startObservingChanges` in order to re-initialize the model's listeners.
+   * If there was already a reactive query that was being monitored, we'll
+   * stop listening to it before holding onto the new query reference.
    *
    * @param {Object} query A reactive query created via
    *    `PublicationClient::LocalCollection::find`.
    */
   setReactiveQuery(query) {
+    if (this._reactiveQuery) this._reactiveQuery.stopObservingChanges();
     this._reactiveQuery = query;
-  }
+  },
 
   /**
    * Stop listening to the events establishedd in `startObservingChanges`.
@@ -156,6 +155,6 @@ class PublicationModel extends Backbone.Model {
       .removeListener('added', this._boundOnAdded)
       .removeListener('changed', this._boundOnChanged);
   }
-}
+});
 
 export default PublicationModel;

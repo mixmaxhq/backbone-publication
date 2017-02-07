@@ -7,10 +7,12 @@ with the necessary reactive queries from a `publication-client`. This normally
 can be done in the bootstrapping process. For instance:
 
 ```js
-// During the bootstrapping process we normally set most collections/models -
-// using `backbone-publication` collections/models is no different.
+// During the bootstrapping process we normally initialize most
+// collections/models - using `backbone-publication` collections/models is no
+// different.
 
-setUserFeatures(new FeatureCollection(initialPayload.features, {
+var featureCollection = new FeatureCollection(initialPayload.features, {
+  // pubClient is initialized by using the `publication-client` constructor.
   reactiveQuery: pubClient.getCollection('features').find({ userId: getUser().id }),
   waitOn: pubClient.subscribe('features', ['branding'])
 }));
@@ -21,24 +23,11 @@ Where FeatureCollection is defined as:
 ```js
 import { PublicationCollection } from 'backbone-publication';
 
-class FeatureCollection extends PublicationCollection {
-  // Code removed for example purposes.
-}
-
-export default FeatureCollection;
-```
-
-Or if you don't want to use ES6 classes, you can do:
-```js
-import { PublicationCollection } from 'backbone-publication';
-
+// Note that we only need to extend the Publication[Collection,Model]s if we
+// need to add custom behavioural overrides.
 var FeatureCollection = PublicationCollection.extend({
   // Code removed for example purposes.
 });
 
 export default FeatureCollection;
 ```
-
-There really shouldn't be any differences when migrating from
-Backbone.Meteor[Model,Collection] - all the differences are handled under the
-hood.

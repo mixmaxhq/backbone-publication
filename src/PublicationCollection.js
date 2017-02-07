@@ -8,7 +8,13 @@ import PublicationModel from './PublicationModel';
  * between our usage of Backbone and our publications - it represents the state
  * of many individual documents (a collection).
  */
-class PublicationCollection extends Backbone.Collection {
+var PublicationCollection = Backbone.Collection.extend({
+  // Document our unofficial internal API that we use to monitor for changes.
+  _reactiveQuery: null,
+  _waitOn: null,
+
+  // Default to using the PublicationModel if no other model is provided.
+  model: PublicationModel,
 
   /**
    * Creates the PublicationCollection and sets up handlers to listen to a
@@ -24,9 +30,7 @@ class PublicationCollection extends Backbone.Collection {
    *    @property {Bool} startObservingChanges Whether or not to monitory the
    *       reactive query immediately.
    */
-  constructor(models, options) {
-    super(models, options);
-
+  initialize(models, options) {
     if (!(this.model.prototype instanceof PublicationModel) && this.model !== PublicationModel) {
       throw new Error('PublicationCollection models must derive from PublicationModel for syncing to work right.');
     }
@@ -40,17 +44,17 @@ class PublicationCollection extends Backbone.Collection {
     this._boundOnRemoved = this._onRemoved.bind(this);
 
     if (this._waitOn) {
-      this._waitOn.whenReady().then(function() {
+      this._waitOn.whenReady().then(() => {
         // Once the relevant subscription is ready, reset the collection to the
         // current state of the result set. (We've skipped over the initial
         // 'add' events.)
         this.reset(this._reactiveQuery.fetch());
         this.startObservingChanges();
-      }.bind(this));
+      });
     } else if (options.startObservingChanges) {
       this.startObservingChanges();
     }
-  }
+  },
 
   /**
    * Handles `added` events emitted by the reactive query.
@@ -62,7 +66,7 @@ class PublicationCollection extends Backbone.Collection {
     // result set. Since that may overlap with the models with which the
     // collection was initialized, we merge the models.
     this.add(doc, { merge: true });
-  }
+  },
 
   /**
    * Handles `changed` events emitted by the reactive query.
@@ -79,7 +83,7 @@ class PublicationCollection extends Backbone.Collection {
       var toSet = _.deepOmit(fields, isUndefinedOrNull);
       model.set(toSet);
     }
-  }
+  },
 
   /**
    * Handles `removed` events emitted by the reactive query.
@@ -89,7 +93,7 @@ class PublicationCollection extends Backbone.Collection {
     if (model) {
       this.remove(model);
     }
-  }
+  },
 
   /**
    * Starts observing the reactive query for changes.
@@ -99,7 +103,7 @@ class PublicationCollection extends Backbone.Collection {
       .on('added', this._boundOnAdded)
       .on('changed', this._boundOnChanged)
       .on('removed', this._boundOnRemoved);
-  }
+  },
 
   /**
    * Stop listening to the events established in `startObservingChanges`.
@@ -109,7 +113,7 @@ class PublicationCollection extends Backbone.Collection {
       .removeListener('added', this._boundOnAdded)
       .removeListener('changed', this._boundOnChanged)
       .removeListener('removed', this._boundOnRemoved);
-  }
+  },
 
   set(models, options) {
     // Don't permit models to have their own reactive queries.
@@ -118,8 +122,7 @@ class PublicationCollection extends Backbone.Collection {
 
       var modelHasReactiveQuerySet = _.any(models, function(model) {
         // As opposed to being a raw attribute object.
-        var modelIsMeteorModel = (model instanceof Backbone.MeteorModel);
-        return modelIsMeteorModel && !!model._reactiveQuery;
+        return (model instanceof PublicationModel) && !!model._reactiveQuery;
       });
 
       if (modelHasReactiveQuerySet) {
@@ -127,10 +130,8 @@ class PublicationCollection extends Backbone.Collection {
       }
     }
 
-    // HACK(ttacon): For some reason, `super.set` doesn't function correctly
-    // here. I'll need to look into why.
-    Backbone.Collection.prototype.set.apply(this, arguments);
+    PublicationCollection.__super__.set.apply(this, arguments);
   }
-};
+});
 
 export default PublicationCollection;
