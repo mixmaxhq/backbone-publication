@@ -1,7 +1,7 @@
 {
   "name": "backbone-publication",
   "version": "0.0.0",
-  "description": "Publication backed Backbone.Meteor and Backbone.Collection classes",
+  "description": "Supports backbone classes backed by `publication-client` reactive queries.",
   "main": "dist/browser/index.js",
   "files": [
     "dist",
