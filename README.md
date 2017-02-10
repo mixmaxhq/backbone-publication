@@ -33,4 +33,5 @@ export default FeatureCollection;
 ```
 
 ### Changelog
-* 1.0.0 Initial release.
+* 1.0.1 - Use our own local utils instead of external underscore extensions.
+* 1.0.0 - Initial release.
