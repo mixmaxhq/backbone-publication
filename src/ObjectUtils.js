@@ -70,7 +70,7 @@ var ObjectUtils = {
   },
 
   /**
-   * isObject is a cheap version of $.isPlainObject because importing jquery for
+   * isPlainObject is a cheap version of $.isPlainObject because importing jquery for
    * a single function is overkill. The only difference in functionality is that
    * this `isObject` fails to return false for an ES6 class created object (which
    * is fine for our current needs).
@@ -79,7 +79,7 @@ var ObjectUtils = {
    * @returns {Boolean} true if `obj` is a plain object or ES6 class instantiated
    *    object, false otherwise.
    */
-  isObject: function(obj) {
+  isPlainObject: function(obj) {
     return _.isObject(obj) && !_.isArray(obj);
   }
 };
