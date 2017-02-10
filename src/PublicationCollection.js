@@ -1,6 +1,8 @@
 import _ from 'underscore';
 import Backbone from 'backbone';
+
 import PublicationModel from './PublicationModel';
+import ObjectUtils from './ObjectUtils';
 
 
 /**
@@ -77,10 +79,10 @@ var PublicationCollection = Backbone.Collection.extend({
       var isUndefinedOrNull = function(field) {
         return _.isUndefined(field) || _.isNull(field);
       };
-      var toUnset = _.deepPick(fields, isUndefinedOrNull);
+      var toUnset = ObjectUtils.deepPick(fields, isUndefinedOrNull);
       model.unset(toUnset);
 
-      var toSet = _.deepOmit(fields, isUndefinedOrNull);
+      var toSet = ObjectUtils.deepOmit(fields, isUndefinedOrNull);
       model.set(toSet);
     }
   },
