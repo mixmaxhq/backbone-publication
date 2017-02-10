@@ -1,6 +1,8 @@
 import _ from 'underscore';
 import Backbone from 'backbone';
 
+import ObjectUtils from './ObjectUtils';
+
 /**
  * A PublicationModel is a class that provides an integration point between
  * our usage of Backbone and our publications - it represents an individual
@@ -67,7 +69,7 @@ var PublicationModel = Backbone.Model.extend({
 
     // Determine the final attributes, merging in nested objects to prevent overwrite.
     var oldAttributes = _.omit(this.attributes, '_id', 'createdAt');
-    var fullAttributes = _.deepExtend(oldAttributes, newAttributes);
+    var fullAttributes = ObjectUtils.deepExtend(oldAttributes, newAttributes);
 
     // Perform the standard Backbone.js set. Do this first, so when we trigger
     // events further down the new attributes are in place.
@@ -125,10 +127,10 @@ var PublicationModel = Backbone.Model.extend({
     var isUndefinedOrNull = function(field) {
       return _.isUndefined(field) || _.isNull(field);
     };
-    var toUnset = _.deepPick(fields, isUndefinedOrNull);
+    var toUnset = ObjectUtils.deepPick(fields, isUndefinedOrNull);
     if (!_.isEmpty(toUnset)) this.unset(toUnset);
 
-    var toSet = _.deepOmit(fields, isUndefinedOrNull);
+    var toSet = ObjectUtils.deepOmit(fields, isUndefinedOrNull);
     if (!_.isEmpty(toSet)) this.set(toSet);
   },
 
