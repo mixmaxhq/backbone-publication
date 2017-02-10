@@ -33,5 +33,6 @@ export default FeatureCollection;
 ```
 
 ### Changelog
+* 1.0.2 - Util function name typo (`isObject` -> `isPlainObject`).
 * 1.0.1 - Use our own local utils instead of external underscore extensions.
 * 1.0.0 - Initial release.
