@@ -24,11 +24,10 @@ const build = new MultiBuild({
   entry: (target) => (target === 'tests') ? TEST_FILES : `src/${target}.js`,
   rollupOptions: (target) => {
     return {
-      external: ['jquery', 'backbone', 'underscore'],
+      external: ['backbone', 'underscore'],
       globals: (target === 'tests') ? {
-        jquery: '$',
-        underscore: '_',
-        backbone: 'Backbone'
+        backbone: 'Backbone',
+        underscore: '_'
       } : {},
       plugins: _.compact([
         (target === 'tests') && multiEntry({exports: false}),
