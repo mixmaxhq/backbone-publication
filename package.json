@@ -8,11 +8,12 @@
     "src"
   ],
   "scripts": {
-    "build": "[ \"$WATCH\" == 'true' ] && rollup -cw || rollup -c",
+    "build": "gulp",
     "watch": "WATCH=true npm run build",
     "test": "gulp erik",
     "prebuild": "rm -rf dist",
-    "prepublish": "npm run build"
+    "pretest": "rm -f spec/tests.js",
+    "prepublish": "npm test && npm run build"
   },
   "repository": {
     "type": "git",
