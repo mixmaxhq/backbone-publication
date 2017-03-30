@@ -7,5 +7,3 @@ node_js:
 cache:
   directories:
     - node_modules
-before_install:
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
