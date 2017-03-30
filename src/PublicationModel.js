@@ -85,11 +85,9 @@ var PublicationModel = Backbone.Model.extend({
         if (_.isObject(value)) this.trigger('change:' + key, this, attributes[key], options);
       });
 
-      // If the new attributes were all nested objects, trigger a general `change` event too.
-      var allObjects = _.every(newAttributes, function(v) {
-        return _.isObject(v);
-      });
-      if (allObjects) this.trigger('change', this, newAttributes, options);
+      if (!_.isEmpty(newAttributes)) {
+        this.trigger('change', this, newAttributes, options);
+      }
     }
 
     return this;
