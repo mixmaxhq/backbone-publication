@@ -1,4 +1,6 @@
 # backbone-publication
+[![Build Status](https://travis-ci.org/mixmaxhq/backbone-publication.svg?branch=master)](https://travis-ci.org/mixmaxhq/backbone-publication)
+
 `backbone-publication` implements the boilerplate code that is required to make
 `backbone` and our publication based system (through
 [`publication-client`](https://github.com/mixmaxhq/publication-server/tree/master/client))
