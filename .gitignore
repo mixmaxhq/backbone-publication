@@ -31,3 +31,5 @@ node_modules
 spec/browser/spec.bundle.js
 *.sublime-workspace
 /dist
+/spec/tests.js
+/spec/.erik
