@@ -5,9 +5,8 @@ describe('PublicationModel', () => {
     it('should trigger "change" for a set call in object style', (done) => {
       const model = new PublicationModel();
 
-      model.on('change', (model, changes) => {
-        // `change` will trigger on when creating the new model.
-        if (_.isEmpty(changes)) return;
+      model.on('change', () => {
+        const changes = model.changedAttributes();
 
         expect(changes.foo).toEqual(true);
         done();
@@ -19,9 +18,8 @@ describe('PublicationModel', () => {
     it('should trigger "change" for a set call in (key, value) style', (done) => {
       const model = new PublicationModel();
 
-      model.on('change', (model, changes) => {
-        // `change` will trigger on when creating the new model.
-        if (_.isEmpty(changes)) return;
+      model.on('change', () => {
+        const changes = model.changedAttributes();
 
         expect(changes.foo).toEqual(false);
         done();
