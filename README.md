@@ -35,6 +35,7 @@ export default FeatureCollection;
 ```
 
 ### Changelog
+* 1.0.4 - Reverted change on `PublicationModel.set` and added warning instead.
 * 1.0.3 - Fixed issue with `PublicationModel.set` not firing `change` event.
 * 1.0.2 - Util function name typo (`isObject` -> `isPlainObject`).
 * 1.0.1 - Use our own local utils instead of external underscore extensions.
