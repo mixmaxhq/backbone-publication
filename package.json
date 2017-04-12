@@ -9,11 +9,11 @@
   ],
   "scripts": {
     "build": "gulp",
-    "watch": "WATCH=true npm run build",
+    "watch": "WATCH=true yarn run build",
     "test": "gulp erik",
     "prebuild": "rm -rf dist",
     "pretest": "rm -f spec/tests.js",
-    "prepublish": "npm test && npm run build"
+    "prepublish": "yarn test && yarn run build"
   },
   "repository": {
     "type": "git",
