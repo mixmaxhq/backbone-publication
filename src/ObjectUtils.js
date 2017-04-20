@@ -81,6 +81,38 @@ var ObjectUtils = {
    */
   isPlainObject: function(obj) {
     return _.isObject(obj) && !_.isArray(obj);
+  },
+
+  /**
+   * Performs a deep clone of an object.
+   * @param {Object} source - the object to clone.
+   * @returns {Object} a clone of the given object, where any descendent objects are themselves
+   * cloned, and not just references to their respective counterpart in `source`.
+   */
+  deepClone: function(source) {
+    var clone = _.clone(source);
+    _.each(clone, (v,k) => {
+      if (_.isObject(v)) {
+        clone[k] = ObjectUtils.deepClone(v);
+      }
+    });
+    return clone;
+  },
+
+  /**
+   * Returns the changes between two objects. Includes attributes in `b` that are not in `a`, and
+   * attributes that are in both `a` and `b` but where the values differ. Performs deep comparison
+   * of objects and arrays.
+   * @param {Object} a - the source object.
+   * @param {Object} b - the comparison object.
+   * @returns {Object} an object containing the attributes of `b` which differ from `a`.
+   */
+  changes: function(a, b) {
+    const toReturn = {};
+    _.each(b, (v,k) => {
+      if (!_.has(a, k) || !_.isEqual(a[k], v)) toReturn[k] = v;
+    });
+    return toReturn;
   }
 };
 
