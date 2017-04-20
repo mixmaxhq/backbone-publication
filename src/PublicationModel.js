@@ -69,30 +69,37 @@ var PublicationModel = Backbone.Model.extend({
 
     // Determine the final attributes, merging in nested objects to prevent overwrite.
     var oldAttributes = _.omit(this.attributes, '_id', 'createdAt');
-    var fullAttributes = ObjectUtils.deepExtend(oldAttributes, newAttributes);
+    var fullAttributes = ObjectUtils.deepExtend(ObjectUtils.deepClone(oldAttributes), newAttributes);
 
-    // Perform the standard Backbone.js set. Do this first, so when we trigger
-    // events further down the new attributes are in place.
+    /* Determine which attributes actually changed. This protects against things like the existing
+     * value for an attribute being passed in.  */
+    var changedAttributes = ObjectUtils.changes(oldAttributes, fullAttributes);
+
+    // If there were no real changes, we can bail.
+    var hasChanges = !_.isEmpty(changedAttributes);
+    if (!hasChanges) return;
+
+    /* Perform the standard Backbone.js set. Do this first, so when we trigger events further down
+     * the new attributes are in place. We also determine if all the changes were to nested
+     * objects - if so, we don't emit any events (but still call `set` so the new attributes are
+     * stored on the model).  */
+    var allChangesAreObjects = _.every(changedAttributes, v => _.isObject(v));
+    var standardOpts = _.extend({}, options, { silent: allChangesAreObjects });
     if (options.unset) {
-      PublicationModel.__super__.unset.call(this, fullAttributes, options);
+      PublicationModel.__super__.unset.call(this, changedAttributes, standardOpts);
     } else {
-      PublicationModel.__super__.set.call(this, fullAttributes, options);
+      PublicationModel.__super__.set.call(this, changedAttributes, standardOpts);
     }
 
     if (!options.silent) {
       // Trigger events for any nested objects.
-      _.each(newAttributes, (value, key, attributes) => {
+      _.each(changedAttributes, (value, key, attributes) => {
         if (_.isObject(value)) this.trigger('change:' + key, this, attributes[key], options);
-      });
-
-      // If the new attributes were all nested objects, trigger a general `change` event too.
-      var allObjects = _.every(newAttributes, function(v) {
-        return _.isObject(v);
       });
 
       // NOTE: Do not rely on this event passing the changed attributes. This does not conform to
       // Backbone's `change` event where the new attributes are not passed.
-      if (allObjects) this.trigger('change', this, newAttributes, options);
+      if (allChangesAreObjects) this.trigger('change', this, changedAttributes, options);
     }
 
     return this;
