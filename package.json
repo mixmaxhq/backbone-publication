@@ -1,6 +1,6 @@
 {
   "name": "backbone-publication",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Supports backbone classes backed by `publication-client` reactive queries.",
   "main": "dist/browser/index.js",
   "files": [
