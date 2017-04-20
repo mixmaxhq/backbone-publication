@@ -77,7 +77,7 @@ var PublicationModel = Backbone.Model.extend({
 
     // If there were no real changes, we can bail.
     var hasChanges = !_.isEmpty(changedAttributes);
-    if (!hasChanges) return;
+    if (!hasChanges) return this;
 
     /* Perform the standard Backbone.js set. Do this first, so when we trigger events further down
      * the new attributes are in place. We also determine if all the changes were to nested
