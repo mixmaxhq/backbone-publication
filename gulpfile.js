@@ -1,4 +1,4 @@
-/* jshint node:true */
+/* eslint-disable no-console */
 const _ = require('underscore');
 const babel = require('rollup-plugin-babel');
 const Erik = require('erik');
@@ -6,7 +6,6 @@ const gulp = require('gulp');
 const MultiBuild = require('multibuild');
 const multiEntry = require('rollup-plugin-multi-entry');
 const path = require('path');
-const rootImport = require('rollup-plugin-root-import');
 
 const SHOULD_WATCH = (process.env.WATCH === 'true');
 const SHOULD_BUILD_TESTS = (process.env.npm_lifecycle_event === 'test');

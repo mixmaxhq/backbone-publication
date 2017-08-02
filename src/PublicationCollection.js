@@ -117,7 +117,7 @@ var PublicationCollection = Backbone.Collection.extend({
       .removeListener('removed', this._boundOnRemoved);
   },
 
-  set(models, options) {
+  set(models) {
     // Don't permit models to have their own reactive queries.
     if (models) {
       models = _.isArray(models) ? models : [models];
