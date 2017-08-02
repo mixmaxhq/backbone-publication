@@ -37,7 +37,7 @@ var ObjectUtils = {
       return _.isObject(f) && !_.isArray(f);
     });
 
-    _.each(nested, function(value, key, object) {
+    _.each(nested, function(value, key) {
       var localObj = ObjectUtils.deepPick(value, whitelist);
       if (!_.isEmpty(localObj)) picked[key] = localObj;
     });
@@ -60,7 +60,7 @@ var ObjectUtils = {
       return _.isObject(f) && !_.isArray(f);
     });
 
-    _.each(nested, function(value, key, object) {
+    _.each(nested, function(value, key) {
       var localObj = ObjectUtils.deepOmit(value, blacklist);
       if (!_.isEmpty(localObj)) omitted[key] = localObj;
       else delete omitted[key];
