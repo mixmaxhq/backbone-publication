@@ -34,7 +34,7 @@
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.22.0",
-    "erik": "^1.1.1",
+    "erik": "^2.0.0",
     "eslint": ">=3",
     "eslint-config-mixmax": "^0.6.0",
     "gulp": "^3.9.1",
