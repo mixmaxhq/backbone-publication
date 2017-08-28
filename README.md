@@ -35,6 +35,7 @@ export default FeatureCollection;
 ```
 
 ### Changelog
+* 1.0.7 - Fixed incorrect function call in `PublicationModel.setReactiveQuery`.
 * 1.0.6 - Fixed issue where `PublicationModel.set` did not always return `this`.
 * 1.0.5 - Changed `PublicationModel.set` to correctly fire `change` events for nested objects.
 * 1.0.4 - Reverted change on `PublicationModel.set` and added warning instead.
