@@ -155,7 +155,7 @@ var PublicationModel = Backbone.Model.extend({
    *    `PublicationClient::LocalCollection::find`.
    */
   setReactiveQuery(query) {
-    if (this._reactiveQuery) this._reactiveQuery.stopObservingChanges();
+    if (this._reactiveQuery) this.stopObservingChanges();
     this._reactiveQuery = query;
   },
 
