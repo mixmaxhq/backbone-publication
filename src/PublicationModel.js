@@ -160,7 +160,7 @@ var PublicationModel = Backbone.Model.extend({
   },
 
   /**
-   * Stop listening to the events establishedd in `startObservingChanges`.
+   * Stop listening to the events established in `startObservingChanges`.
    */
   stopObservingChanges() {
     this._reactiveQuery
