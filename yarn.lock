@@ -1103,9 +1103,9 @@ ent@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/ent/-/ent-2.2.0.tgz#e964219325a21d05f44466a2f686ed6ce5f5dd1d"
 
-erik@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/erik/-/erik-2.0.0.tgz#4c8556a6c5effa82ecebae451690ae459a27e165"
+erik@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/erik/-/erik-3.0.0.tgz#322778ad0fe01c6c034fc1203d8d905c2c7ef9d3"
   dependencies:
     del "^2.2.2"
     gulp-concat "^2.6.1"
