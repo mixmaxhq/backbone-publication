@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import isPlainObject from 'lodash.isplainobject';
 
 /**
  * A collection of object-related utilities.
@@ -13,7 +14,7 @@ var ObjectUtils = {
    */
   deepExtend: function(target, source) {
     _.each(source, function(value, key) {
-      if (_.has(target, key) && ObjectUtils.isPlainObject(target[key]) && ObjectUtils.isPlainObject(source[key])) {
+      if (_.has(target, key) && isPlainObject(target[key]) && isPlainObject(source[key])) {
         ObjectUtils.deepExtend(target[key], source[key]);
       } else {
         target[key] = source[key];
@@ -33,9 +34,7 @@ var ObjectUtils = {
     // arguments does not have `slice`, so convert to array first.
     if (_.isString(whitelist)) whitelist = _.rest(arguments);
     var picked = _.pick(fields, whitelist);
-    var nested = _.pick(fields, function(f) {
-      return _.isObject(f) && !_.isArray(f);
-    });
+    var nested = _.pick(fields, isPlainObject);
 
     _.each(nested, function(value, key) {
       var localObj = ObjectUtils.deepPick(value, whitelist);
@@ -56,9 +55,7 @@ var ObjectUtils = {
     // arguments does not have `slice`, so convert to array first.
     if (_.isString(blacklist)) blacklist = _.rest(arguments);
     var omitted = _.omit(fields, blacklist);
-    var nested = _.pick(fields, function(f) {
-      return _.isObject(f) && !_.isArray(f);
-    });
+    var nested = _.pick(fields, isPlainObject);
 
     _.each(nested, function(value, key) {
       var localObj = ObjectUtils.deepOmit(value, blacklist);
@@ -70,18 +67,12 @@ var ObjectUtils = {
   },
 
   /**
-   * isPlainObject is a cheap version of $.isPlainObject because importing jquery for
-   * a single function is overkill. The only difference in functionality is that
-   * this `isObject` fails to return false for an ES6 class created object (which
-   * is fine for our current needs).
+   * Proxy the isPlainObject for convenience.
    *
    * @param {*} obj Anything.
-   * @returns {Boolean} true if `obj` is a plain object or ES6 class instantiated
-   *    object, false otherwise.
+   * @returns {Boolean} true if `obj` is a plain object
    */
-  isPlainObject: function(obj) {
-    return _.isObject(obj) && !_.isArray(obj);
-  },
+  isPlainObject: isPlainObject,
 
   /**
    * Performs a deep clone of an object.
@@ -112,6 +103,7 @@ var ObjectUtils = {
     _.each(b, (v,k) => {
       if (!_.has(a, k) || !_.isEqual(a[k], v)) toReturn[k] = v;
     });
+
     return toReturn;
   }
 };

@@ -75,5 +75,19 @@ describe('PublicationModel', () => {
         }
       });
     });
+
+    it('should not change the value of a nested date object on a second set', (done) => {
+      const model = new PublicationModel();
+      const date = new Date();
+      const cb = _.after(2, done);
+
+      model.on('change', () => {
+        expect(model.get('bar').qux).toEqual(date);
+        cb();
+      });
+
+      model.set({ foo: 'bar', bar: { qux: date } });
+      model.set({ foo: 'hello', bar: { qux: date, baz: true } });
+    });
   });
 });

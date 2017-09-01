@@ -4,7 +4,9 @@ const babel = require('rollup-plugin-babel');
 const Erik = require('erik');
 const gulp = require('gulp');
 const MultiBuild = require('multibuild');
+const commonjs = require('rollup-plugin-commonjs');
 const multiEntry = require('rollup-plugin-multi-entry');
+const nodeResolve = require('rollup-plugin-node-resolve');
 const path = require('path');
 
 const SHOULD_WATCH = (process.env.WATCH === 'true');
@@ -43,7 +45,9 @@ const build = new MultiBuild({
             'external-helpers'
           ],
           exclude: ['node_modules/**']
-        })
+        }),
+        nodeResolve(),
+        commonjs({ include: ['node_modules/**'] })
       ]),
       format: (target === 'tests') ? 'iife' : 'es'
     };
