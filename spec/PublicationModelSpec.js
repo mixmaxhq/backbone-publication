@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import PublicationModel from '../src/PublicationModel';
 
 describe('PublicationModel', () => {
