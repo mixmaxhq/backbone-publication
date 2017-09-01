@@ -1,4 +1,4 @@
-import ObjectUtils from '../src/ObjectUtils';
+import ObjectUtils from '../src/utils/ObjectUtils';
 
 describe('ObjectUtils', () => {
   describe('#changes', () => {

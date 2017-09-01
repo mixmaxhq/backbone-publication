@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import Backbone from 'backbone';
 
-import ObjectUtils from './ObjectUtils';
+import ObjectUtils from './utils/ObjectUtils';
 
 /**
  * A PublicationModel is a class that provides an integration point between

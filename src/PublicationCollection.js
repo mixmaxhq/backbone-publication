@@ -2,7 +2,7 @@ import _ from 'underscore';
 import Backbone from 'backbone';
 
 import PublicationModel from './PublicationModel';
-import ObjectUtils from './ObjectUtils';
+import ObjectUtils from './utils/ObjectUtils';
 
 
 /**
