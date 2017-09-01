@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import isPlainObject from './object/isPlainObject';
+import isPlainObject from 'lodash.isplainobject';
 
 /**
  * A collection of object-related utilities.

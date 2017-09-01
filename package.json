@@ -43,12 +43,16 @@
     "pre-commit": "^1.2.2",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.2.0",
     "rollup-plugin-multi-entry": "^2.0.1",
-    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-root-import": "^0.2.2",
     "underscore": "^1.8.3"
   },
   "pre-commit": [
     "lint"
-  ]
+  ],
+  "dependencies": {
+    "lodash.isplainobject": "^4.0.6"
+  }
 }
