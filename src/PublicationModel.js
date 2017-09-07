@@ -83,7 +83,7 @@ var PublicationModel = Backbone.Model.extend({
      * the new attributes are in place. We also determine if all the changes were to nested
      * objects - if so, we don't emit any events (but still call `set` so the new attributes are
      * stored on the model).  */
-    var allChangesAreObjects = _.every(changedAttributes, v => _.isObject(v));
+    var allChangesAreObjects = _.every(changedAttributes, ObjectUtils.isPlainObject);
     var standardOpts = _.extend({}, options, { silent: allChangesAreObjects });
     if (options.unset) {
       PublicationModel.__super__.unset.call(this, changedAttributes, standardOpts);
@@ -94,7 +94,7 @@ var PublicationModel = Backbone.Model.extend({
     if (!options.silent) {
       // Trigger events for any nested objects.
       _.each(changedAttributes, (value, key, attributes) => {
-        if (_.isObject(value)) this.trigger('change:' + key, this, attributes[key], options);
+        if (ObjectUtils.isPlainObject(value)) this.trigger('change:' + key, this, attributes[key], options);
       });
 
       // NOTE: Do not rely on this event passing the changed attributes. This does not conform to
