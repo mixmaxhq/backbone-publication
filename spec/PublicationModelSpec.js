@@ -90,5 +90,27 @@ describe('PublicationModel', () => {
       model.set({ foo: 'bar', bar: { qux: date } });
       model.set({ foo: 'hello', bar: { qux: date, baz: true } });
     });
+
+    it('should not change value of a nested date object when setting another property', function () {
+      const date = new Date("2017-09-07T23:23:00.000Z");
+
+      const data = {
+        foo: 'bar',
+        wubble: 'hi',
+        baz: {
+          qux: new Date('2017-09-07T23:23:00.000Z')
+        }
+      };
+
+      const model = new PublicationModel(data);
+
+      expect(model.get('baz').qux).toEqual(jasmine.any(Date));
+      expect(model.get('baz').qux).toEqual(date);
+
+      model.set('wubble', 'foo');
+
+      expect(model.get('baz').qux).toEqual(jasmine.any(Date));
+      expect(model.get('baz').qux).toEqual(date);
+    });
   });
 });
