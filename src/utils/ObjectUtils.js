@@ -83,7 +83,7 @@ var ObjectUtils = {
   deepClone: function(source) {
     var clone = _.clone(source);
     _.each(clone, (v,k) => {
-      if (_.isObject(v)) {
+      if (isPlainObject(v)) {
         clone[k] = ObjectUtils.deepClone(v);
       }
     });
