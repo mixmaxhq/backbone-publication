@@ -132,7 +132,7 @@ var PublicationCollection = Backbone.Collection.extend({
       }
     }
 
-    PublicationCollection.__super__.set.apply(this, arguments);
+    return PublicationCollection.__super__.set.apply(this, arguments);
   }
 });
 
