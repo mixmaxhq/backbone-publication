@@ -35,6 +35,7 @@ export default FeatureCollection;
 ```
 
 ### Changelog
+* 1.0.10 - Fixed `PublicationColletion#set` return.
 * 1.0.9 - Fixed another instance of object instances were considered plain objects. Replaced all `_.isObject` usages for `isPlainObject`
 * 1.0.8 - Fixed issue where object instances were considered plain objects.
 * 1.0.7 - Fixed incorrect function call in `PublicationModel.setReactiveQuery`.
