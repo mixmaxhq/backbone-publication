@@ -1,5 +1,7 @@
 ## Release History
 
+* 1.0.11 Deyarnify
+
 * 1.0.10 - Fixed `PublicationCollection#set` return.
 
 * 1.0.9 - Fixed another instance of object instances were considered plain objects. Replaced all `_.isObject` usages for `isPlainObject`
