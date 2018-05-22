@@ -9,11 +9,11 @@
   ],
   "scripts": {
     "build": "gulp",
-    "watch": "WATCH=true yarn run build",
+    "watch": "WATCH=true npm run build",
     "test": "gulp erik",
     "prebuild": "rm -rf dist",
     "pretest": "rm -f spec/tests.js",
-    "prepublish": "yarn test && yarn run build",
+    "prepublish": "npm test && npm run build",
     "lint": "eslint ."
   },
   "repository": {
@@ -54,5 +54,8 @@
   ],
   "dependencies": {
     "lodash.isplainobject": "^4.0.6"
+  },
+  "engines": {
+    "yarn": "YARN NO LONGER USED - use npm instead."
   }
 }
