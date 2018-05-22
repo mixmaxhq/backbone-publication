@@ -92,7 +92,7 @@ describe('PublicationModel', () => {
     });
 
     it('should not change value of a nested date object when setting another property', function () {
-      const date = new Date("2017-09-07T23:23:00.000Z");
+      const date = new Date('2017-09-07T23:23:00.000Z');
 
       const data = {
         foo: 'bar',
