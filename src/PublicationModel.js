@@ -41,6 +41,7 @@ var PublicationModel = Backbone.Model.extend({
 
     this._boundOnAdded = this._onAdded.bind(this);
     this._boundOnChanged = this._onChanged.bind(this);
+    this._boundOnRemoved = this._onRemoved.bind(this);
 
     this._reactiveQuery = options.reactiveQuery;
     if (this._reactiveQuery && options.startObservingChanges) {
@@ -112,8 +113,8 @@ var PublicationModel = Backbone.Model.extend({
   startObservingChanges() {
     this._reactiveQuery
       .on('added', this._boundOnAdded)
-      .on('changed', this._boundOnChanged);
-    // Ignore `removed`--it's up to the client to destroy the model.
+      .on('changed', this._boundOnChanged)
+      .on('removed', this._boundOnRemoved);
   },
 
   /**
@@ -144,6 +145,13 @@ var PublicationModel = Backbone.Model.extend({
     if (!_.isEmpty(toSet)) this.set(toSet);
   },
 
+  _onRemoved(id) {
+    // Sanity check.
+    if (id !== this.id) return;
+
+    this.trigger('destroy', this, this.collection, {} /* options */);
+  },
+
   /**
    * Sets the reactive query to the given reactive query.
    * NOTE: if you use this functionality, you'll need to also call
@@ -165,7 +173,8 @@ var PublicationModel = Backbone.Model.extend({
   stopObservingChanges() {
     this._reactiveQuery
       .removeListener('added', this._boundOnAdded)
-      .removeListener('changed', this._boundOnChanged);
+      .removeListener('changed', this._boundOnChanged)
+      .removeListener('removed', this._boundOnRemoved);
   }
 });
 
