@@ -50,7 +50,7 @@ var PublicationCollection = Backbone.Collection.extend({
         // Once the relevant subscription is ready, reset the collection to the
         // current state of the result set. (We've skipped over the initial
         // 'add' events.)
-        this.reset(this._reactiveQuery.fetch());
+        if (this._reactiveQuery) this.reset(this._reactiveQuery.fetch());
         this.startObservingChanges();
       });
     } else if (options.startObservingChanges) {
@@ -101,6 +101,7 @@ var PublicationCollection = Backbone.Collection.extend({
    * Starts observing the reactive query for changes.
    */
   startObservingChanges() {
+    if (!this._reactiveQuery) return;
     this._reactiveQuery
       .on('added', this._boundOnAdded)
       .on('changed', this._boundOnChanged)
@@ -111,6 +112,7 @@ var PublicationCollection = Backbone.Collection.extend({
    * Stop listening to the events established in `startObservingChanges`.
    */
   stopObservingChanges() {
+    if (!this._reactiveQuery) return;
     this._reactiveQuery
       .removeListener('added', this._boundOnAdded)
       .removeListener('changed', this._boundOnChanged)
