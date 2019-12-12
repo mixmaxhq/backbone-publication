@@ -50,7 +50,7 @@ var PublicationCollection = Backbone.Collection.extend({
         // Once the relevant subscription is ready, reset the collection to the
         // current state of the result set. (We've skipped over the initial
         // 'add' events.)
-        this.reset(this._reactiveQuery.fetch());
+        if (this._reactiveQuery) this.reset(this._reactiveQuery.fetch());
         this.startObservingChanges();
       });
     } else if (options.startObservingChanges) {
