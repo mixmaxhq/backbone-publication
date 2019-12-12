@@ -101,6 +101,7 @@ var PublicationCollection = Backbone.Collection.extend({
    * Starts observing the reactive query for changes.
    */
   startObservingChanges() {
+    if (!this._reactiveQuery) return;
     this._reactiveQuery
       .on('added', this._boundOnAdded)
       .on('changed', this._boundOnChanged)
@@ -111,6 +112,7 @@ var PublicationCollection = Backbone.Collection.extend({
    * Stop listening to the events established in `startObservingChanges`.
    */
   stopObservingChanges() {
+    if (!this._reactiveQuery) return;
     this._reactiveQuery
       .removeListener('added', this._boundOnAdded)
       .removeListener('changed', this._boundOnChanged)
