@@ -1,6 +1,8 @@
 ## Release History
 
-* 1.0.11 Deyarnify
+* 1.0.12 - Ensure `PublicationCollection` can be initialized with default arguments.
+
+* 1.0.11 - Deyarnify
 
 * 1.0.10 - Fixed `PublicationCollection#set` return.
 
