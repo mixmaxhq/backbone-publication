@@ -8,6 +8,7 @@
     "src"
   ],
   "scripts": {
+    "ci": "npm run lint && npm test",
     "build": "gulp",
     "watch": "WATCH=true npm run build",
     "test": "gulp erik",
