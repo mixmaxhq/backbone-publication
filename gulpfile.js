@@ -9,8 +9,8 @@ const multiEntry = require('rollup-plugin-multi-entry');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const path = require('path');
 
-const SHOULD_WATCH = (process.env.WATCH === 'true');
-const SHOULD_BUILD_TESTS = (process.env.npm_lifecycle_event === 'test');
+const SHOULD_WATCH = process.env.WATCH === 'true';
+const SHOULD_BUILD_TESTS = process.env.npm_lifecycle_event === 'test';
 
 const SRC_FILES = 'src/**/*';
 const TEST_FILES = ['spec/**/*.js', '!spec/tests.js'];
@@ -18,60 +18,54 @@ const pkg = require('./package.json');
 
 const build = new MultiBuild({
   gulp,
-  targets: _.compact([
-    'index',
-    SHOULD_BUILD_TESTS && 'tests'
-  ]),
-  entry: (target) => (target === 'tests') ? TEST_FILES : `src/${target}.js`,
+  targets: _.compact(['index', SHOULD_BUILD_TESTS && 'tests']),
+  entry: (target) => (target === 'tests' ? TEST_FILES : `src/${target}.js`),
   rollupOptions: (target) => {
     return {
       external: ['backbone', 'underscore'],
-      globals: (target === 'tests') ? {
-        backbone: 'Backbone',
-        underscore: '_'
-      } : {},
+      globals:
+        target === 'tests'
+          ? {
+              backbone: 'Backbone',
+              underscore: '_',
+            }
+          : {},
       plugins: _.compact([
-        (target === 'tests') && multiEntry({exports: false}),
+        target === 'tests' && multiEntry({ exports: false }),
         babel({
           presets: [
             [
               'es2015',
               {
-                modules: false
-              }
-            ]
+                modules: false,
+              },
+            ],
           ],
-          plugins: [
-            'external-helpers'
-          ],
-          exclude: ['node_modules/**']
+          plugins: ['external-helpers'],
+          exclude: ['node_modules/**'],
         }),
         nodeResolve(),
-        commonjs({ include: ['node_modules/**'] })
+        commonjs({ include: ['node_modules/**'] }),
       ]),
-      format: (target === 'tests') ? 'iife' : 'es'
+      format: target === 'tests' ? 'iife' : 'es',
     };
   },
   output: (target, input) => {
     // Write `${destDir}/${target}.js`.
     var destDir = target === 'tests' ? 'spec' : path.dirname(pkg.main);
     return input.pipe(gulp.dest(destDir));
-  }
+  },
 });
 
 new Erik({
   gulp,
   watch: SHOULD_WATCH,
-  taskDependencies: [
-    MultiBuild.task('tests')
-  ],
+  taskDependencies: [MultiBuild.task('tests')],
   remoteDependencies: [
-    'https://cdn.jsdelivr.net/g/jquery@2.1.4,underscorejs@1.8.3,backbonejs@1.1.2'
+    'https://cdn.jsdelivr.net/g/jquery@2.1.4,underscorejs@1.8.3,backbonejs@1.1.2',
   ],
-  localDependencies: [
-    'spec/tests.js'
-  ],
-  bundlePath: 'spec'
+  localDependencies: ['spec/tests.js'],
+  bundlePath: 'spec',
 });
 
 gulp.on('task_start', function(e) {

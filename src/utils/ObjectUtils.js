@@ -12,7 +12,7 @@ var ObjectUtils = {
    * @param  {Object} source
    * @return {Object}
    */
-  deepExtend: function(target, source) {
+  deepExtend(target, source) {
     _.each(source, function(value, key) {
       if (_.has(target, key) && isPlainObject(target[key]) && isPlainObject(source[key])) {
         ObjectUtils.deepExtend(target[key], source[key]);
@@ -30,7 +30,7 @@ var ObjectUtils = {
    * @param  {*List}         Accepts an array of acceptable field, a callback function or a list of arguments.
    * @return {Object}        Filtered out fields.
    */
-  deepPick: function(fields, whitelist) {
+  deepPick(fields, whitelist) {
     // arguments does not have `slice`, so convert to array first.
     if (_.isString(whitelist)) whitelist = _.rest(arguments);
     var picked = _.pick(fields, whitelist);
@@ -51,7 +51,7 @@ var ObjectUtils = {
    * @param  {*List} blacklist  Accepts an array of fields, a callback function, or a list of arguments.
    * @return {Object}           Objects with fields omitted.
    */
-  deepOmit: function(fields, blacklist) {
+  deepOmit(fields, blacklist) {
     // arguments does not have `slice`, so convert to array first.
     if (_.isString(blacklist)) blacklist = _.rest(arguments);
     var omitted = _.omit(fields, blacklist);
@@ -72,7 +72,7 @@ var ObjectUtils = {
    * @param {*} obj Anything.
    * @returns {Boolean} true if `obj` is a plain object
    */
-  isPlainObject: isPlainObject,
+  isPlainObject,
 
   /**
    * Performs a deep clone of an object.
@@ -80,9 +80,9 @@ var ObjectUtils = {
    * @returns {Object} a clone of the given object, where any descendent objects are themselves
    * cloned, and not just references to their respective counterpart in `source`.
    */
-  deepClone: function(source) {
+  deepClone(source) {
     var clone = _.clone(source);
-    _.each(clone, (v,k) => {
+    _.each(clone, (v, k) => {
       if (isPlainObject(v)) {
         clone[k] = ObjectUtils.deepClone(v);
       }
@@ -98,14 +98,14 @@ var ObjectUtils = {
    * @param {Object} b - the comparison object.
    * @returns {Object} an object containing the attributes of `b` which differ from `a`.
    */
-  changes: function(a, b) {
+  changes(a, b) {
     const toReturn = {};
-    _.each(b, (v,k) => {
+    _.each(b, (v, k) => {
       if (!_.has(a, k) || !_.isEqual(a[k], v)) toReturn[k] = v;
     });
 
     return toReturn;
-  }
+  },
 };
 
 export default ObjectUtils;

@@ -69,7 +69,10 @@ var PublicationModel = Backbone.Model.extend({
 
     // Determine the final attributes, merging in nested objects to prevent overwrite.
     var oldAttributes = _.omit(this.attributes, '_id', 'createdAt');
-    var fullAttributes = ObjectUtils.deepExtend(ObjectUtils.deepClone(oldAttributes), newAttributes);
+    var fullAttributes = ObjectUtils.deepExtend(
+      ObjectUtils.deepClone(oldAttributes),
+      newAttributes
+    );
 
     /* Determine which attributes actually changed. This protects against things like the existing
      * value for an attribute being passed in.  */
@@ -94,7 +97,8 @@ var PublicationModel = Backbone.Model.extend({
     if (!options.silent) {
       // Trigger events for any nested objects.
       _.each(changedAttributes, (value, key, attributes) => {
-        if (ObjectUtils.isPlainObject(value)) this.trigger('change:' + key, this, attributes[key], options);
+        if (ObjectUtils.isPlainObject(value))
+          this.trigger('change:' + key, this, attributes[key], options);
       });
 
       // NOTE: Do not rely on this event passing the changed attributes. This does not conform to
@@ -110,9 +114,7 @@ var PublicationModel = Backbone.Model.extend({
    * It does not handle `removed` events which should be handled by the client.
    */
   startObservingChanges() {
-    this._reactiveQuery
-      .on('added', this._boundOnAdded)
-      .on('changed', this._boundOnChanged);
+    this._reactiveQuery.on('added', this._boundOnAdded).on('changed', this._boundOnChanged);
     // Ignore `removed`--it's up to the client to destroy the model.
   },
 
@@ -166,7 +168,7 @@ var PublicationModel = Backbone.Model.extend({
     this._reactiveQuery
       .removeListener('added', this._boundOnAdded)
       .removeListener('changed', this._boundOnChanged);
-  }
+  },
 });
 
 export default PublicationModel;
