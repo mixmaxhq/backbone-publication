@@ -9,12 +9,13 @@
   ],
   "scripts": {
     "build": "gulp",
-    "watch": "WATCH=true npm run build",
-    "test": "gulp erik",
+    "ci": "npm run lint && npm test",
+    "lint": "eslint .",
     "prebuild": "rm -rf dist",
     "pretest": "rm -f spec/tests.js",
-    "prepublish": "npm test && npm run build",
-    "lint": "eslint ."
+    "prepublishOnly": "npm test && npm run build",
+    "test": "gulp erik",
+    "watch": "WATCH=true npm run build"
   },
   "repository": {
     "type": "git",
@@ -41,7 +42,6 @@
     "gulp": "^3.9.1",
     "jasmine": "^2.5.3",
     "multibuild": "^2.1.0",
-    "pre-commit": "^1.2.2",
     "prettier": "^1.19.1",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
