@@ -13,7 +13,7 @@ describe('PublicationModel', () => {
         done();
       });
 
-      model.set({foo: true});
+      model.set({ foo: true });
     });
 
     it('should trigger "change" for a set call in (key, value) style', (done) => {
@@ -39,8 +39,8 @@ describe('PublicationModel', () => {
 
       model.set({
         foo: {
-          bar: false
-        }
+          bar: false,
+        },
       });
     });
 
@@ -55,9 +55,9 @@ describe('PublicationModel', () => {
       model.set({
         foo: {
           bar: {
-            buzz: false
-          }
-        }
+            buzz: false,
+          },
+        },
       });
     });
 
@@ -72,8 +72,8 @@ describe('PublicationModel', () => {
       model.set({
         foo: 'bar',
         buzz: {
-          fuzz: false
-        }
+          fuzz: false,
+        },
       });
     });
 
@@ -91,15 +91,15 @@ describe('PublicationModel', () => {
       model.set({ foo: 'hello', bar: { qux: date, baz: true } });
     });
 
-    it('should not change value of a nested date object when setting another property', function () {
+    it('should not change value of a nested date object when setting another property', function() {
       const date = new Date('2017-09-07T23:23:00.000Z');
 
       const data = {
         foo: 'bar',
         wubble: 'hi',
         baz: {
-          qux: new Date('2017-09-07T23:23:00.000Z')
-        }
+          qux: new Date('2017-09-07T23:23:00.000Z'),
+        },
       };
 
       const model = new PublicationModel(data);

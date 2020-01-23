@@ -4,7 +4,6 @@ import Backbone from 'backbone';
 import PublicationModel from './PublicationModel';
 import ObjectUtils from './utils/ObjectUtils';
 
-
 /**
  * A PublicationCollection is a class that provides an integration point
  * between our usage of Backbone and our publications - it represents the state
@@ -34,9 +33,11 @@ var PublicationCollection = Backbone.Collection.extend({
    */
   initialize(models, options) {
     if (!(this.model.prototype instanceof PublicationModel) && this.model !== PublicationModel) {
-      throw new Error('PublicationCollection models must derive from PublicationModel for syncing to work right.');
+      throw new Error(
+        'PublicationCollection models must derive from PublicationModel for syncing to work right.'
+      );
     }
-    
+
     options = _.defaults({}, options, { startObservingChanges: true });
     this._reactiveQuery = options.reactiveQuery;
     this._waitOn = options.waitOn;
@@ -126,16 +127,18 @@ var PublicationCollection = Backbone.Collection.extend({
 
       var modelHasReactiveQuerySet = _.any(models, function(model) {
         // As opposed to being a raw attribute object.
-        return (model instanceof PublicationModel) && !!model._reactiveQuery;
+        return model instanceof PublicationModel && !!model._reactiveQuery;
       });
 
       if (modelHasReactiveQuerySet) {
-        throw new Error('Models in reactive collections must delegate reactivity to the collection.');
+        throw new Error(
+          'Models in reactive collections must delegate reactivity to the collection.'
+        );
       }
     }
 
     return PublicationCollection.__super__.set.apply(this, arguments);
-  }
+  },
 });
 
 export default PublicationCollection;
