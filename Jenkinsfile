@@ -3,4 +3,6 @@
 // with an '@' symbol to the string literal.
 @Library('scm-service-library') _
 
-npmModulePipeline {}
+npmModulePipeline {
+  nodeVersion = '10.19.0'
+}
