@@ -8,7 +8,7 @@ publication-based reactivity layer (`publication-client`). You instantiate `Publ
 `PublicationCollection` with reactive queries from a publication-client (usually at bootstrap). A library,
 not a service.
 
-## serves          # CROSS-CUTTING (shared library) — use this block OR `domain`, never both
+## serves
 role: Backbone bindings for `publication-client` — reactive `PublicationModel` / `PublicationCollection`
   classes that let Backbone frontends consume Mixmax's publication reactivity layer.
 referenced-by: [app, compose, emailapps]
