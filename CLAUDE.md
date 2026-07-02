@@ -11,7 +11,7 @@ not a service.
 ## serves          # CROSS-CUTTING (shared library) — use this block OR `domain`, never both
 role: Backbone bindings for `publication-client` — reactive `PublicationModel` / `PublicationCollection`
   classes that let Backbone frontends consume Mixmax's publication reactivity layer.
-referenced-by: [<fill: frontend repos that use Backbone + publication-client>]
+referenced-by: [app, compose, emailapps]
 
 ## Code map
 - entry                    -> src/index.js
